@@ -1,48 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import store from "./store/index";
-import '../assets/style/index.scss';
+import React, { Component } from 'react';
 
-function geoFindMe() {
-debugger
-  const status = document.querySelector('#status');
-  const mapLink = document.querySelector('#map-link');
+import {
+  Route,
+  Switch,
+  withRouter
+} from "react-router-dom"
 
-  mapLink.href = '';
-  mapLink.textContent = '';
 
-  function success(position) {
-    const latitude  = position.coords.latitude;
-    const longitude = position.coords.longitude;
+import Home from 'pages/Home';
+import City from 'pages/City';
 
-    status.textContent = '';
-    mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-    mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+class App extends Component {
+  render() {
+    const { history } = this.props;
+
+    return (
+        <div className="App">
+          <Switch>
+            <Route history={history} path='/city/:id' component={City} />
+            <Route history={history} path='/' component={Home} />
+          </Switch>
+        </div>
+    );
   }
-
-  function error() {
-    status.textContent = 'Unable to retrieve your location';
-  }
-
-  if(!navigator.geolocation) {
-    status.textContent = 'Geolocation is not supported by your browser';
-  } else {
-    status.textContent = 'Locating…';
-    navigator.geolocation.getCurrentPosition(success, error);
-  }
-
 }
 
-function App() {
-
-  return (
-    <div className="App">
-      <button id = "find-me" onClick={geoFindMe}>Show my location</button><br/>
-      <p id = "status"></p>
-      <a id = "map-link" target="_blank"></a>
-    </div>
-  );
-}
-
-export default App;
+export default withRouter(App)
